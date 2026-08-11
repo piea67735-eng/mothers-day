@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ตามหาลูกชายตัวจริง 💙</title>
+
+<!-- ฟอนต์น่ารัก -->
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Itim&display=swap" rel="stylesheet">
+
+<style>
+
+/* =========================
+   พื้นฐาน
+========================= */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    margin: 0;
+    font-family: "Mitr", sans-serif;
+    background: linear-gradient(135deg, #eaf7ff, #ccecff, #f5fbff);
+    min-height: 100vh;
+    text-align: center;
+    color: #315b75;
+}
+
+
+/* =========================
+   หัวข้อ
+========================= */
+
+h1 {
+    margin-top: 30px;
+    margin-bottom: 8px;
+    font-family: "Itim", cursive;
+    font-size: 42px;
+    color: #3987b8;
+    text-shadow: 2px 2px 0 white;
+}
+
+.subtitle {
+    font-size: 18px;
+    margin-bottom: 25px;
+    color: #527b91;
+}
+
+
+/* =========================
+   การ์ด 4 ใบ
+========================= */
+
+.cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.card {
+    width: 180px;
+    height: 250px;
+    background: linear-gradient(145deg, #fffdf5, #dff3ff);
+    border: 4px solid #8ec9e8;
+    border-radius: 25px;
+    box-shadow: 0 8px 18px rgba(65, 145, 185, 0.22);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-10px) rotate(-1deg) scale(1.03);
+    box-shadow: 0 15px 25px rgba(65, 145, 185, 0.30);
+}
+
+.card::before {
+    content: "🌷";
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    font-size: 25px;
+}
+
+.card::after {
+    content: "💙";
+    position: absolute;
+    bottom: 12px;
+    right: 15px;
+    font-size: 25px;
+}
+
+.card-number {
+    font-family: "Itim", cursive;
+    font-size: 65px;
+    color: #55a3ca;
+}
+
+.card-text {
+    position: absolute;
+    bottom: 42px;
+    font-family: "Itim", cursive;
+    font-size: 20px;
+    color: #527f96;
+}
+
+
+/* =========================
+   หน้าต่างขูด
+========================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(25, 75, 100, 0.65);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+
+/* =========================
+   กล่องขูด
+========================= */
+
+.scratch-box {
+    background: linear-gradient(145deg, #ffffff, #f0faff);
+    border-radius: 28px;
+    padding: 22px;
+    width: min(90vw, 500px);
+    box-shadow: 0 15px 40px rgba(0, 80, 120, 0.30);
+    position: relative;
+    border: 3px solid #a8d9ef;
+}
+
+
+/* =========================
+   ปุ่มปิด
+========================= */
+
+.close {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    border: none;
+    background: #b9e1f3;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    font-size: 24px;
+    color: #39718d;
+    cursor: pointer;
+}
+
+
+/* =========================
+   หัวข้อขูด
+========================= */
+
+.scratch-title {
+    margin-top: 8px;
+    font-family: "Itim", cursive;
+    font-size: 30px;
+    color: #3987b8;
+}
+
+
+/* =========================
+   พื้นที่ขูด
+========================= */
+
+.scratch-area {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    position: relative;
+    margin: 15px auto;
+    overflow: hidden;
+    border-radius: 20px;
+    background: white;
+    border: 3px solid #9ed5ed;
+}
+
+.result-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+#scratchCanvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: pointer;
+}
+
+
+/* =========================
+   เปอร์เซ็นต์
+========================= */
+
+#percent {
+    font-size: 17px;
+    color: #527b91;
+    margin: 5px;
+}
+
+
+/* =========================
+   ข้อความผลลัพธ์
+========================= */
+
+.message {
+    font-family: "Itim", cursive;
+    font-size: 23px;
+    font-weight: bold;
+    min-height: 35px;
+    margin: 10px 0;
+}
+
+.wrong {
+    color: #e32626;
+}
+
+.correct {
+    color: #159447;
+}
+
+
+/* =========================
+   ปุ่ม
+========================= */
+
+.next-button,
+.bless-button {
+    border: none;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-family: "Mitr", sans-serif;
+    font-size: 17px;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: 0.2s;
+}
+
+.next-button {
+    background: #70b8d8;
+    color: white;
+}
+
+.next-button:hover {
+    transform: scale(1.05);
+}
+
+.bless-button {
+    background: #4da6ce;
+    color: white;
+    display: none;
+}
+
+.bless-button:hover {
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   คำอวยพร
+========================= */
+
+.blessing {
+    display: none;
+    margin-top: 15px;
+    padding: 20px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #e4f6ff, #d0edff);
+    font-family: "Itim", cursive;
+    font-size: 21px;
+    line-height: 1.7;
+    color: #47758b;
+    border: 2px solid #a8d9ef;
+}
+
+
+/* =========================
+   มือถือ
+========================= */
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 34px;
+    }
+
+    .subtitle {
+        font-size: 16px;
+        padding: 0 15px;
+    }
+
+    .cards {
+        gap: 12px;
+        padding: 10px;
+    }
+
+    .card {
+        width: 145px;
+        height: 205px;
+    }
+
+    .card-number {
+        font-size: 55px;
+    }
+
+    .card-text {
+        font-size: 17px;
+        bottom: 32px;
+    }
+
+    .scratch-box {
+        width: 94vw;
+        padding: 16px;
+    }
+
+    .scratch-title {
+        font-size: 26px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- =========================
+     หน้าแรก
+========================= -->
+
+<h1>
+    💙 ตามหาลูกชายตัวจริง 💙
+</h1>
+
+<div class="subtitle">
+    🌷 เกมขูดการ์ดพิเศษสำหรับวันแม่ 🌷
+    <br>
+    เลือกการ์ดแล้วขูดเพื่อค้นหาความจริง!
+</div>
+
+
+<!-- =========================
+     การ์ด 4 ใบ
+========================= -->
+
+<div class="cards">
+
+    <div class="card" onclick="openCard(1)">
+        <div class="card-number">1</div>
+        <div class="card-text">การ์ดใบที่ 1 🌷</div>
+    </div>
+
+    <div class="card" onclick="openCard(2)">
+        <div class="card-number">2</div>
+        <div class="card-text">การ์ดใบที่ 2 🌷</div>
+    </div>
+
+    <div class="card" onclick="openCard(3)">
+        <div class="card-number">3</div>
+        <div class="card-text">การ์ดใบที่ 3 🌷</div>
+    </div>
+
+    <div class="card" onclick="openCard(4)">
+        <div class="card-number">4</div>
+        <div class="card-text">การ์ดใบที่ 4 🌷</div>
+    </div>
+
+</div>
+
+
+<!-- =========================
+     หน้าต่างขูด
+========================= -->
+
+<div class="modal" id="modal">
+    <div class="scratch-box">
+
+        <!-- ปิด -->
+        <button class="close" onclick="closeCard()">×</button>
+
+        <!-- หัวข้อ -->
+        <div class="scratch-title">🎁 ขูดการ์ดเพื่อค้นหา!</div>
+
+        <!-- พื้นที่ขูด -->
+        <div class="scratch-area">
+            <img id="resultImage" class="result-image" src="" alt="ผลลัพธ์">
+            <canvas id="scratchCanvas"></canvas>
+        </div>
+
+        <!-- เปอร์เซ็นต์ -->
+        <div id="percent">ขูดแล้ว 0%</div>
+
+        <!-- ข้อความ -->
+        <div id="message" class="message"></div>
+
+        <!-- ปุ่มเลือกการ์ดอื่น -->
+        <button class="next-button" id="nextButton" onclick="closeCard()">
+            🌷 เลือกการ์ดใบอื่น
+        </button>
+
+        <!-- ปุ่มคำอวยพร -->
+        <button class="bless-button" id="blessButton" onclick="showBlessing()">
+            💌 ดูคำอวยพร
+        </button>
+
+        <!-- คำอวยพร -->
+        <div class="blessing" id="blessing">
+            🌷💙 คำอวยพรจากลูกชายถึงแม่ 💙🌷
+            <br><br>
+            สุขสันต์วันแม่นะครับแม่ 💙
+            <br><br>
+            ขอบคุณแม่ที่คอยดูแล<br>
+            คอยอยู่ข้าง ๆ และรักลูกคนนี้เสมอ<br>
+            ถึงบางครั้งลูกอาจจะดื้อหรือทำให้แม่เหนื่อย<br>
+            แต่ลูกรักแม่มาก ๆ นะครับ 🥰
+            <br><br>
+            ขอให้แม่มีความสุขในทุก ๆ วัน<br>
+            สุขภาพแข็งแรง<br>
+            ไม่เจ็บไม่ป่วย<br>
+            และมีรอยยิ้มแบบนี้ไปนาน ๆ นะครับ
+            <br><br>
+            ลูกสัญญาว่าจะตั้งใจเรียน<br>
+            เป็นเด็กดี และจะดูแลแม่ให้ดีที่สุด
+            <br><br>
+            💙 รักแม่นะครับ 💙
+            <br><br>
+            🌷 จากลูกชายคนนี้ 🌷
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+
+/* =====================================
+   รูปภาพ (ชื่อไฟล์ภาพบน GitHub)
+===================================== */
+
+const images = {
+    1: "IMG_20260811_142041.jpg",
+    2: "IMG_20260811_142116.jpg",
+    3: "IMG_20260811_142058.jpg",
+    4: "IMG_20260811_142140.jpg"
+};
+
+
+/* =====================================
+   ตัวแปร
+===================================== */
+
+let currentCard = 0;
+let canvas = document.getElementById("scratchCanvas");
+let ctx = canvas.getContext("2d");
+let scratching = false;
+let finished = false;
+
+
+/* =====================================
+   เปิดการ์ด
+===================================== */
+
+function openCard(cardNumber) {
+    currentCard = cardNumber;
+
+    document.getElementById("modal").classList.add("show");
+    document.getElementById("resultImage").src = images[cardNumber];
+    document.getElementById("message").innerHTML = "";
+    document.getElementById("message").className = "message";
+    document.getElementById("blessing").style.display = "none";
+    document.getElementById("blessButton").style.display = "none";
+    document.getElementById("nextButton").style.display = "inline-block";
+
+    finished = false;
+
+    setTimeout(setupCanvas, 100);
+}
+
+
+/* =====================================
+   ปิดการ์ด
+===================================== */
+
+function closeCard() {
+    document.getElementById("modal").classList.remove("show");
+}
+
+
+/* =====================================
+   สร้างแผ่นขูด
+===================================== */
+
+function setupCanvas() {
+    const area = document.querySelector(".scratch-area");
+
+    canvas.style.display = "block";
+    canvas.width = area.clientWidth;
+    canvas.height = area.clientHeight;
+
+    ctx = canvas.getContext("2d");
+    ctx.globalCompositeOperation = "source-over";
+
+    /* สีฟ้าพาสเทล */
+    ctx.fillStyle = "#a9d9ed";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    /* ลายตกแต่ง */
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "30px Arial";
+    ctx.fillText("🌷 💙 🌷", canvas.width / 2, canvas.height / 2 - 20);
+
+    ctx.fillStyle = "#47758b";
+    ctx.font = "18px Arial";
+    ctx.fillText("ขูดเพื่อค้นหาความจริง", canvas.width / 2, canvas.height / 2 + 25);
+
+    document.getElementById("percent").innerText = "ขูดแล้ว 0%";
+    finished = false;
+}
+
+
+/* =====================================
+   ตำแหน่งนิ้ว / เมาส์
+===================================== */
+
+function getPosition(e) {
+    const rect = canvas.getBoundingClientRect();
+    let clientX, clientY;
+
+    if (e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+
+    return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+    };
+}
+
+
+/* =====================================
+   เริ่มขูด
+===================================== */
+
+function startScratch(e) {
+    e.preventDefault();
+    scratching = true;
+    scratch(e);
+}
+
+
+/* =====================================
+   ขูด
+===================================== */
+
+function scratch(e) {
+    if (!scratching || finished) return;
+
+    e.preventDefault();
+    const pos = getPosition(e);
+
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 25, 0, Math.PI * 2);
+    ctx.fill();
+
+    checkPercentage();
+}
+
+
+/* =====================================
+   หยุดขูด
+===================================== */
+
+function stopScratch() {
+    scratching = false;
+}
+
+
+/* =====================================
+   ตรวจเปอร์เซ็นต์
+===================================== */
+
+function checkPercentage() {
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+
+    for (let i = 3; i < data.length; i += 4) {
+        if (data[i] < 100) transparent++;
+    }
+
+    const percent = Math.round((transparent / (data.length / 4)) * 100);
+
+    document.getElementById("percent").innerText = "ขูดแล้ว " + percent + "%";
+
+    if (percent >= 50) {
+        revealResult();
+    }
+}
+
+
+/* =====================================
+   แสดงผลลัพธ์
+===================================== */
+
+function revealResult() {
+    if (finished) return;
+
+    finished = true;
+    canvas.style.display = "none";
+
+    const message = document.getElementById("message");
+
+    if (currentCard === 4) {
+        message.className = "message correct";
+        message.innerHTML = "🎉 ยินดีด้วย เจอลูกชายตัวจริงซักที! 🎉";
+        document.getElementById("nextButton").style.display = "none";
+        document.getElementById("blessButton").style.display = "inline-block";
+    } else {
+        message.className = "message wrong";
+        message.innerHTML = "เสียใจด้วย นี่ไม่ใช่ลูกแม่นะครับ 😭";
+        document.getElementById("nextButton").style.display = "inline-block";
+        document.getElementById("blessButton").style.display = "none";
+    }
+}
+
+
+/* =====================================
+   แสดงคำอวยพร
+===================================== */
+
+function showBlessing() {
+    document.getElementById("blessing").style.display = "block";
+    document.getElementById("blessButton").style.display = "none";
+}
+
+
+/* =====================================
+   รองรับเมาส์
+===================================== */
+
+canvas.addEventListener("mousedown", startScratch);
+canvas.addEventListener("mousemove", scratch);
+canvas.addEventListener("mouseup", stopScratch);
+canvas.addEventListener("mouseleave", stopScratch);
+
+
+/* =====================================
+   รองรับนิ้วมือถือ
+===================================== */
+
+canvas.addEventListener("touchstart", startScratch, { passive: false });
+canvas.addEventListener("touchmove", scratch, { passive: false });
+canvas.addEventListener("touchend", stopScratch);
+
+</script>
+
+</body>
+</html>
